@@ -1,0 +1,10 @@
+
+3.1 Construction d’un RBM et test sur Binary AlphaDigits
+On complètera au fur et à mesure un script principal_RBM_alpha permettant d’apprendre les caractères de la base Binary AlphaDigits de votre choix via un RBM et de générer des caractères similaires à ceux appris. La construction de ce programme nécessite les fonctions suivantes:
+• Écrire une fonction lire_alpha_digit permettant de récupérer les données sous forme matricielle (en ligne les données, en colonne les pixels) et qui prend en argument les caractères (ou leur indice 0, · · · , 35) que l’on souhaite “apprendre”.
+• Écrire une fonction init_RBM permettant de construire et d’initialiser les poids et les biais d’un RBM. Cette fonction retournera une structure RBM avec des poids et biais initialisés. On initialisera les biais à 0 tandis que les poids seront initialisés aléatoirement suivant une loi normale centrée, de variance égale à 0.01.
+• Écrire une fonction entree_sortie_RBM qui prend en argument une structure RBM et des données d’entrée et qui retourne la valeur des unités de sortie calculées à partir de la fonction sigmoïde.
+• Écrire une fonction sortie_entree_RBM qui prend en argument un RBM, des données de sortie et qui retourne la valeur des unités d’entrée à partir de la fonction sigmoïde.
+• Écrireunefonctiontrain_RBMpermettantd’apprendredemanièrenonsuperviséeunRBMparl’algorithme Contrastive-Divergence-1. Cette fonction retournera un structure RBM et prendra en argument une structure RBM, le nombre d’itérations de la descente de gradient (epochs), le learning rate, la taille
+du mini-batch, des données d’entrées... À la fin de chaque itération du gradient, on affichera l’erreur quadratique entre les données d’entrées et les données reconstruites à partir de l’unité cachée afin de mesurer le pouvoir de reconstruction du RBM.
+• Écrire une fonction generer_image_RBM permettant de générer des échantillons suivant un RBM. Cette fonction retournera et affichera les images générées et prendra en argument une structure de type RBM, le nombre d’itérations à utiliser dans l’échantillonneur de Gibbs et le nombre d’images à générer.
