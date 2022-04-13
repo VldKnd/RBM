@@ -2,7 +2,6 @@ from tqdm.notebook import tqdm
 import numpy as np
 import math
 
-
 class RBM():
     
     def __init__(self, in_channels, out_channels):
