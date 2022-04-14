@@ -1,2 +1,2 @@
 # RBM
-Implementation of RMB and DNN
+Implementation of Restricted Boltzman Machine, Deep Belief Network and Deep Neural Network
