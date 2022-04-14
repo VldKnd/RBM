@@ -46,7 +46,7 @@ class RBM():
                     v_0 - self.sample_from_data(v_0),
                     ord=2,
                     axis=1,
-                ).mean()
+                ).sum()
     
     def train_batch(self, v_0, lr):
         p_h_0 = self.forward(v_0)

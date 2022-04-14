@@ -17,8 +17,13 @@ class DBN():
                     ]
         self.b = [
                     np.zeros((1, n)) 
-                        for n in self.ch
+                        for n in self.ch[1:]
                     ]
+
+        self.b_0 = [
+                    np.zeros((1, n)) 
+                        for n in self.ch[:-1]
+        ]
 
     def train_DBN(self, data, n_epoches=10, lr=0.1, batch_size=64, shuffle=True):
         losses = []
@@ -33,16 +38,16 @@ class DBN():
                 batch = data[idxes[i*batch_size:(i+1)*batch_size]]
                 input = batch
                 for j in range(self.n_ch-1):
-                    self.W[j], self.b[j], self.b[j+1], input = self.train_batch(input, lr, self.W[j], self.b[j], self.b[j+1])
+                    self.W[j], self.b_0[j], self.b[j], input = self.train_batch_DBN(input, lr, self.W[j], self.b_0[j], self.b[j])
 
-                err += self.evaluate(batch)
+                err += self.eval_DBN(batch)
                 n_elem += batch.shape[0]
             losses.append(err/n_elem)
             pbar.set_description("{:.3f}".format(losses[-1]))
                     
         return losses
     
-    def train_batch(self, v_0, lr, W, b_0, b_1):
+    def train_batch_DBN(self, v_0, lr, W, b_0, b_1):
         p_h_0 = sigmoid(v_0@W + b_1)
         sample_h_0 = np.random.uniform(0, 1, p_h_0.shape)
         h_0 = (sample_h_0 < p_h_0).astype(int)
@@ -68,24 +73,24 @@ class DBN():
 
         return W, b_0, b_1, h_0
     
-    def evaluate(self, v_0):        
+    def eval_DBN(self, v_0):        
         return np.linalg.norm(
                     v_0 - self.sample_from_data(v_0),
                     ord=2,
                     axis=1,
-                ).mean()
+                ).sum()
     
 
     def sample_from_data(self, data):
         v = data
         for j in range(self.n_ch-1):
-            p_h = sigmoid(v@self.W[j] + self.b[j+1])
+            p_h = sigmoid(v@self.W[j] + self.b[j])
             sample = np.random.uniform(0, 1, p_h.shape)
             v = (sample < p_h).astype(int)
 
         h = v
         for j in range(self.n_ch-2, -1, -1):
-            p_v = sigmoid(h@self.W[j].T + self.b[j])
+            p_v = sigmoid(h@self.W[j].T + self.b_0[j])
             sample = np.random.uniform(0, 1, p_v.shape)
             h = (sample < p_v).astype(int)
 
@@ -99,7 +104,7 @@ class DBN():
             input = np.random.randint(0, 2, size=(n_images, self.W[-1].shape[0]))
 
         for _ in range(n_iters):
-            p_v = sigmoid(input@self.W[-1].T + self.b[-2])
+            p_v = sigmoid(input@self.W[-1].T + self.b_0[-1])
             sample_v = np.random.uniform(0, 1, p_v.shape)
             v = (sample_v < p_v).astype(int)
             
@@ -108,7 +113,7 @@ class DBN():
             input = (sample_h < p_h).astype(int)
 
         for j in range(self.n_ch - 2, -1, -1):
-            p_v = sigmoid(input@self.W[j].T + self.b[j])
+            p_v = sigmoid(input@self.W[j].T + self.b_0[j])
             sample_v = np.random.uniform(0, 1, p_v.shape)
             input = (sample_v < p_v).astype(int)
 
