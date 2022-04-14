@@ -19,6 +19,35 @@ class DNN():
                         for n in self.ch
                     ]
 
+    def forward(self, data, get_inter=False):
+        if get_inter:
+            out = {
+                "in":data
+            }
+        else:
+            out = {}
+
+        input = data
+        for j in range(self.n_ch-1):
+            input = sigmoid(input@self.W[j] + self.b[j+1])
+            if get_inter:
+                out[j] = input
+        output = softmax(input)
+        
+        if get_inter:
+            out["out"] = output
+
+        return output, out
+
+    def backpropagate(self, X, y):
+        output, activations = self.forward(X, get_inter=True)
+        grad_softmax = activations["out"] - y
+        
+
+    def eval(self, X, y):
+        y_pred, _ = self.forward(X)
+        return cross_entropy(y, y_pred)
+
     def train_DBN(self, data, n_epoches=10, lr=0.1, batch_size=64, shuffle=True):
         losses = []
         size = data.shape[0]
@@ -32,16 +61,16 @@ class DNN():
                 batch = data[idxes[i*batch_size:(i+1)*batch_size]]
                 input = batch
                 for j in range(self.n_ch-1):
-                    self.W[j], self.b[j], self.b[j+1], input = self.train_batch(input, lr, self.W[j], self.b[j], self.b[j+1])
+                    self.W[j], self.b[j], self.b[j+1], input = self.train_batch_DBN(input, lr, self.W[j], self.b[j], self.b[j+1])
 
-                err += self.evaluate(batch)
+                err += self.evaluate_DBN(batch)
                 n_elem += batch.shape[0]
             losses.append(err/n_elem)
             pbar.set_description("{:.3f}".format(losses[-1]))
                     
         return losses
     
-    def train_batch(self, v_0, lr, W, b_0, b_1):
+    def train_batch_DBN(self, v_0, lr, W, b_0, b_1):
         p_h_0 = sigmoid(v_0@W + b_1)
         sample_h_0 = np.random.uniform(0, 1, p_h_0.shape)
         h_0 = (sample_h_0 < p_h_0).astype(int)
@@ -67,7 +96,7 @@ class DNN():
 
         return W, b_0, b_1, h_0
     
-    def evaluate(self, v_0):        
+    def evaluate_DBN(self, v_0):        
         return np.linalg.norm(
                     v_0 - self.sample_from_data(v_0),
                     ord=2,
@@ -112,6 +141,3 @@ class DNN():
             input = (sample_v < p_v).astype(int)
 
         return input
-
-def softmax():
-    pass

@@ -1,6 +1,6 @@
 
-from .utils import *
 from tqdm.notebook import tqdm
+from .utils import *
 import numpy as np
 import math
 
