@@ -52,22 +52,22 @@ class RBM():
         p_h_0 = self.forward(v_0)
         sample_h_0 = np.random.uniform(0, 1, p_h_0.shape)
         h_0 = (sample_h_0 < p_h_0).astype(int)
-        
+
         p_v_1 = self.backward(h_0)
         sample_v_1 = np.random.uniform(0, 1, p_v_1.shape)
         v_1 = (sample_v_1 < p_v_1).astype(int)
         p_h_1 = self.forward(v_1)
-        
+
         dW = v_0[:, :, np.newaxis]*p_h_0[:, np.newaxis, :] - v_1[:, :, np.newaxis]*p_h_1[:, np.newaxis]
         dW = dW.mean(axis=0)
-        
-        da = (p_h_0 - p_h_1).mean(0, keepdims=True)
+
         db = (v_0 - v_1).mean(0, keepdims=True)
+        da = (p_h_0 - p_h_1).mean(0, keepdims=True)
 
         self.W += lr*dW
         self.a += lr*da
         self.b += lr*db
-    
+
         return self
     
     def sample_from_data(self, data):
@@ -86,7 +86,7 @@ class RBM():
         else:
             input = np.random.randint(0, 2, size=(n_images, self.W.shape[0]))
 
-        for n in range(n_iters):
+        for _ in range(n_iters):
             p_h = self.forward(input)
             sample_h = np.random.uniform(0, 1, p_h.shape)
             h = (sample_h < p_h).astype(int)

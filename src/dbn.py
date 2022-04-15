@@ -38,7 +38,8 @@ class DBN():
                 batch = data[idxes[i*batch_size:(i+1)*batch_size]]
                 input = batch
                 for j in range(self.n_ch-1):
-                    self.W[j], self.b_0[j], self.b[j], input = self.train_batch_DBN(input, lr, self.W[j], self.b_0[j], self.b[j])
+                    self.W[j], self.b_0[j], self.b[j], h = self.train_batch_DBN(input, lr, self.W[j], self.b_0[j], self.b[j])
+                    input = h
 
                 err += self.eval_DBN(batch)
                 n_elem += batch.shape[0]
@@ -80,7 +81,6 @@ class DBN():
                     axis=1,
                 ).sum()
     
-
     def sample_from_data(self, data):
         v = data
         for j in range(self.n_ch-1):
@@ -96,7 +96,6 @@ class DBN():
 
         return h
         
-
     def sample_Gibbs(self, n_iters=10, n_images=1, noise = None):
         if noise is not None:
             input = noise
