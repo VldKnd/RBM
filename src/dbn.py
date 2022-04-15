@@ -100,7 +100,7 @@ class DBN():
         if noise is not None:
             input = noise
         else:
-            input = np.random.randint(0, 2, size=(n_images, self.W[-1].shape[0]))
+            input = np.random.randint(0, 2, size=(n_images, self.W[-1].shape[1]))
 
         for _ in range(n_iters):
             p_v = sigmoid(input@self.W[-1].T + self.b_0[-1])
