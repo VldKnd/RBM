@@ -37,7 +37,7 @@ class RBM():
                 err += self.evaluate(batch)
                 n_elem += batch.shape[0]
             losses.append(err/n_elem)
-            pbar.set_description("{:.3f}".format(losses[-1]))
+            pbar.set_description("MSE: {:.3f}".format(losses[-1]))
             
         return losses
     

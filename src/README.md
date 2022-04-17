@@ -1,4 +1,5 @@
-## Elementary functions
+# Main
+### Elementary functions
 An RBM can be represented by an object/structure containing a field W (weight matrix linking visible variables to hidden variables), a field a (bias of input units) and a field b (bias of output units)
 A neural network (DNN) and a Deep Belief Network (DBN) can be represented by a list of RBMs, the size of this list being equal to the number of hidden layers of the network (+ classifying layer in the case of the DNN). Each element of this list will therefore coincide with an RBM and will contain a field W (weight matrix linking 2 consecutive layers), a field a (bias of the input units which coincide with the estimated variational parameters, except for the first layer) and a field b.
 Here is a list of functions that will allow to build/learn neural network.
